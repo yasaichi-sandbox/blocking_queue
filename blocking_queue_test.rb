@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'thread'
+require 'timeout'
 require_relative 'blocking_queue'
 
 describe BlockingQueue do
@@ -37,7 +38,13 @@ describe BlockingQueue do
     end
 
     it 'blocks and waits for an element to become when it is empty' do
-      # TODO: Write this!
+      begin
+        Timeout.timeout(3) do
+          @queue.pop
+        end
+      rescue => e
+        assert e.is_a?(Timeout::Error)
+      end
     end
   end
 end
